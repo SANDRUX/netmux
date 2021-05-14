@@ -9,7 +9,7 @@ netmux::TcpSocket::TcpSocket (const int mode)
 
         if (this->sfd == -1)
         {
-            throw exception::exception("Error caught when creating a tcp socket!");
+            throw exception("Error caught when creating a tcp socket!");
         }
     }
 }
