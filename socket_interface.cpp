@@ -1,11 +1,11 @@
 #include "socket_interface.hpp"
 #include "exception.hpp"
 
-netmux::socket::socket() : sfd(-1) 
+netmux::socket::socket () : sfd(-1) 
 {
 }
 
-netmux::socket::socket(const int mode)
+netmux::socket::socket (const int mode)
 {
     if (mode == TCP)
     {
@@ -26,14 +26,36 @@ netmux::socket::socket(const int mode)
             throw exception("Error caught when creating an udp socket!");
         }
     }
+
+    this->ref_count[this->sfd] = 1;
 }
 
-void netmux::socket::operator = (const socket & obj)
+netmux::socket::socket(const socket & obj)
 {
+    this->ref_count[obj.sfd] += 1;
     this->sfd = obj.sfd;
 }
 
-size_t netmux::socket::send(const std::vector<uint8_t> &buf) const
+bool netmux::socket::operator = (const socket & obj)
+{
+    if (this->sfd == obj.sfd)
+    {
+        return true;
+    }
+    
+    if (--(this->ref_count[this->sfd]) == 0)
+    {
+        if (close(this->sfd) == -1)
+        {
+            return false;
+        }
+    }
+
+    this->sfd = obj.get_fd();
+    this->ref_count[obj.sfd] += 1;
+}
+
+size_t netmux::socket::send (const std::vector<uint8_t> & buf) const
 {
     size_t numWrite = write(this->sfd, buf.data(), sizeof(decltype(buf[0])) * buf.size());
 
@@ -45,7 +67,7 @@ size_t netmux::socket::send(const std::vector<uint8_t> &buf) const
     return numWrite;
 }
 
-size_t netmux::socket::receive(std::vector<uint8_t> &buf) const
+size_t netmux::socket::receive (std::vector<uint8_t> & buf) const
 {
     size_t size = sizeof(decltype(buf[0])) * buf.size();
 

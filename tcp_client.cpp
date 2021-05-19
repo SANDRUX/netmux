@@ -1,17 +1,8 @@
 #include "socket_interface.hpp"
 #include "exception.hpp"
 
-netmux::TcpClient::TcpClient (const socket & obj)
+netmux::TcpClient::TcpClient (const socket & obj) : socket(obj)
 {
-    if (this->sfd != -1)
-    {
-        if (close(this->sfd) == -1)
-        {
-            throw exception("Could not close the socket, Error occurred or already closed!");
-        }
-    }
-    
-    this->sfd = obj.get_fd();
 }
 
 void netmux::TcpClient::operator = (const socket & obj)

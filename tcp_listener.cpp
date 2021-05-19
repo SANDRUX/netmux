@@ -22,16 +22,8 @@ netmux::TcpListener::TcpListener(const int port) : socket(TCP)
     }
 }
 
-netmux::TcpListener::TcpListener(const socket & obj)
+netmux::TcpListener::TcpListener(const socket & obj) : socket(obj)
 {
-    if (this->sfd != -1)
-    {
-        if (close(this->sfd) == -1)
-        {
-            throw exception("Could not close the socket, Error occurred or already closed!");
-        }
-    }
-    this->sfd = obj.get_fd();
 }
 
 void netmux::TcpListener::operator = (const socket & obj)
