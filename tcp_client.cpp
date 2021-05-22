@@ -5,7 +5,7 @@ netmux::TcpClient::TcpClient (const socket & obj) : socket(obj)
 {
 }
 
-void netmux::TcpClient::operator = (const socket & obj)
+bool netmux::TcpClient::operator = (const socket & obj)
 {
     if (this->sfd != -1)
     {

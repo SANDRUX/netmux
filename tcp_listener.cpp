@@ -1,7 +1,7 @@
 #include "socket_interface.hpp"
 #include "exception.hpp"
 
-#define BACKLOG 128
+#define BACKLOG 2048
 
 netmux::TcpListener::TcpListener(const int port) : socket(TCP)
 {
@@ -26,7 +26,7 @@ netmux::TcpListener::TcpListener(const socket & obj) : socket(obj)
 {
 }
 
-void netmux::TcpListener::operator = (const socket & obj)
+bool netmux::TcpListener::operator = (const socket & obj)
 {
     if (this->sfd != -1)
     {
